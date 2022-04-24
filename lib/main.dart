@@ -1,8 +1,9 @@
-import 'package:approval_app/domain/entities/module.dart';
 import 'package:approval_app/presentation/pages/approval_page.dart';
+import 'package:approval_app/presentation/pages/detail_approval.dart';
 import 'package:approval_app/presentation/pages/homepage.dart';
 import 'package:approval_app/presentation/pages/login_page.dart';
 import 'package:approval_app/presentation/provider/approval_notifier.dart';
+import 'package:approval_app/presentation/provider/detail_approval_notifier.dart';
 import 'package:approval_app/presentation/provider/login_notifier.dart';
 import 'package:approval_app/presentation/provider/main_notifier.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +27,9 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => di.locator<LoginNotifier>()),
         ChangeNotifierProvider(create: (_) => di.locator<MainNotifier>()),
-        ChangeNotifierProvider(create: (_) => di.locator<ApprovalNotfier>())
+        ChangeNotifierProvider(create: (_) => di.locator<ApprovalNotfier>()),
+        ChangeNotifierProvider(
+            create: (_) => di.locator<DetailApprovalNotfier>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -42,9 +45,13 @@ class MyApp extends StatelessWidget {
             case HomePage.ROUTE_NAME:
               return MaterialPageRoute(builder: (_) => const HomePage());
             case ApprovalPage.ROUTE_NAME:
-              final data = settings.arguments as Map<String,dynamic>;
+              final data = settings.arguments as Map<String, dynamic>;
               return MaterialPageRoute(
                   builder: (_) => ApprovalPage(data: data));
+            case DetailApprovalPage.ROUTE_NAME:
+              final data = settings.arguments as Map<String, dynamic>;
+              return MaterialPageRoute(
+                  builder: (_) => DetailApprovalPage(data: data));
             default:
               return MaterialPageRoute(
                 builder: (_) {

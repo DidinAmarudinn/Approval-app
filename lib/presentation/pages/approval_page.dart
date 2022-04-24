@@ -1,4 +1,3 @@
-import 'package:approval_app/domain/entities/module.dart';
 import 'package:approval_app/presentation/provider/approval_notifier.dart';
 import 'package:approval_app/presentation/widgets/approval_list_widget.dart';
 import 'package:approval_app/style/font_style.dart';
@@ -10,8 +9,8 @@ import 'package:provider/provider.dart';
 class ApprovalPage extends StatefulWidget {
   static const ROUTE_NAME = '/approval-page';
 
-  final Map<String, dynamic>  data;
-  
+  final Map<String, dynamic> data;
+
   const ApprovalPage({Key? key, required this.data}) : super(key: key);
 
   @override
@@ -65,7 +64,12 @@ class _ApprovalPageState extends State<ApprovalPage> {
               itemCount: provider.approval.length,
               itemBuilder: (context, index) {
                 final approval = provider.approval[index];
-                return ApprovalListWidget(approval: approval);
+                return ApprovalListWidget(
+                  approval: approval,
+                  token: widget.data["token"],
+                  companyId: widget.data["companyId"],
+                  module: widget.data["moduleName"] ?? "-", 
+                );
               });
         } else if (provider.state == RequestState.error) {
           return Center(

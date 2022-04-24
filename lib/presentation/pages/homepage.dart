@@ -154,6 +154,7 @@ class _HomePageState extends State<HomePage> {
                               return CardModule(
                                 module: data,
                                 token: provider.loginSession?.data.token ?? "",
+                                
                                 companyId: provider.selectedCompany?.id ?? 100,
                               );
                             },

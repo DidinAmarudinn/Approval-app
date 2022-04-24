@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:approval_app/data/models/approval_model.dart';
 import 'package:approval_app/data/models/approval_response.dart';
+import 'package:approval_app/data/models/detail_approval_model.dart';
 import 'package:approval_app/data/models/login_model.dart';
 import 'package:approval_app/data/models/module_model.dart';
 import 'package:approval_app/data/models/module_response.dart';
@@ -14,6 +15,8 @@ abstract class ApprovalRemoteDataSource {
   Future<List<ModuleModel>> getModule(int companyId, String token);
   Future<List<ApprovalModel>> getApproval(
       int companyId, String module, String token);
+  Future<DetailApprovalModel> getDetailApproval(
+      int companyId, String module, String token, int id);
 }
 
 class ApprovalRemoteDataSourceImpl extends ApprovalRemoteDataSource {
@@ -49,7 +52,7 @@ class ApprovalRemoteDataSourceImpl extends ApprovalRemoteDataSource {
   Future<List<ModuleModel>> getModule(int companyId, String token) async {
     final response = await client.get(Uri.parse(
         '$baseUrl/nativeapi/approval/main.php?token=$token&company=$companyId'));
-    
+
     if (response.statusCode == 200) {
       return ModuleResponse.fromJson(json.decode(response.body)).moduleList;
     } else {
@@ -65,6 +68,19 @@ class ApprovalRemoteDataSourceImpl extends ApprovalRemoteDataSource {
 
     if (response.statusCode == 200) {
       return ApprovalResponse.fromJson(json.decode(response.body)).approvalList;
+    } else {
+      throw ServerException();
+    }
+  }
+
+  @override
+  Future<DetailApprovalModel> getDetailApproval(
+      int companyId, String module, String token, int id) async {
+    final response = await client.get(Uri.parse(
+        '$baseUrl/nativeapi/approval/view.php?token=$token&company=$companyId&module=$module&id=$id'));
+    print(response.body);
+    if (response.statusCode == 200) {
+      return DetailApprovalModel.fromJson(json.decode(response.body));
     } else {
       throw ServerException();
     }

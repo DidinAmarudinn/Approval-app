@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:approval_app/data/datasource/approval_local_datasource.dart';
 import 'package:approval_app/data/datasource/approval_remote_datasource.dart';
 import 'package:approval_app/domain/entities/approval.dart';
+import 'package:approval_app/domain/entities/detail_approval.dart';
 import 'package:approval_app/domain/entities/login.dart';
 import 'package:approval_app/domain/entities/module.dart';
 import 'package:approval_app/domain/repositories/approval_repository.dart';
@@ -56,8 +57,23 @@ class ApprovalRepositoryImpl extends ApprovalRepository {
   Future<Either<Failure, List<Approval>>> getApproval(
       int companyId, String module, String token) async {
     try {
-      final result = await remoteDataSource.getApproval(companyId,module,token);
+      final result =
+          await remoteDataSource.getApproval(companyId, module, token);
       return Right(result.map((model) => model.toEntity()).toList());
+    } on ServerException {
+      return const Left(ServerFailure(''));
+    } on SocketException {
+      return const Left(ConnectionFailure("failed connect to the network"));
+    }
+  }
+
+  @override
+  Future<Either<Failure, DetailApproval>> getDetailApproval(
+      int companyId, String module, String token, int id) async {
+    try {
+      final result = await remoteDataSource.getDetailApproval(
+          companyId, module, token, id);
+      return Right(result.toEntity());
     } on ServerException {
       return const Left(ServerFailure(''));
     } on SocketException {
