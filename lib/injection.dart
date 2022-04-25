@@ -7,6 +7,7 @@ import 'package:approval_app/domain/usecases/get_data_login.dart';
 import 'package:approval_app/domain/usecases/get_detail_approval.dart';
 import 'package:approval_app/domain/usecases/get_list_approval.dart';
 import 'package:approval_app/domain/usecases/get_module.dart';
+import 'package:approval_app/domain/usecases/post_apprval.dart';
 import 'package:approval_app/presentation/provider/approval_notifier.dart';
 import 'package:approval_app/presentation/provider/detail_approval_notifier.dart';
 import 'package:approval_app/presentation/provider/login_notifier.dart';
@@ -31,7 +32,7 @@ Future<void> init() async {
     () => ApprovalNotfier(getListApproval: locator()),
   );
   locator.registerFactory(
-      () => DetailApprovalNotfier(getDetailApproval: locator()));
+      () => DetailApprovalNotfier(getDetailApproval: locator(),saveApproval: locator()));
 
   // use case
   locator.registerLazySingleton(() => DoLogin(locator()));
@@ -39,6 +40,7 @@ Future<void> init() async {
   locator.registerLazySingleton(() => GetModele(locator()));
   locator.registerLazySingleton(() => GetListApproval(locator()));
   locator.registerLazySingleton(() => GetDetailApproval(locator()));
+  locator.registerLazySingleton(() => SaveApproval(locator()));
   // repository
   locator.registerLazySingleton<ApprovalRepository>(
     () => ApprovalRepositoryImpl(

@@ -80,4 +80,18 @@ class ApprovalRepositoryImpl extends ApprovalRepository {
       return const Left(ConnectionFailure("failed connect to the network"));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> saveApproval(int companyId, String module,
+      String token, int id, String action, String remark) async {
+    try {
+      final result = await remoteDataSource.saveApproval(
+          companyId, module, token, id, action, remark);
+      return Right(result);
+    } on ServerException {
+      return const Left(ServerFailure(''));
+    } on SocketException {
+      return const Left(ConnectionFailure("failed connect to the network"));
+    }
+  }
 }

@@ -17,6 +17,8 @@ abstract class ApprovalRemoteDataSource {
       int companyId, String module, String token);
   Future<DetailApprovalModel> getDetailApproval(
       int companyId, String module, String token, int id);
+  Future<bool> saveApproval(int companyId, String module, String token, int id,
+      String action, String remark);
 }
 
 class ApprovalRemoteDataSourceImpl extends ApprovalRemoteDataSource {
@@ -78,10 +80,27 @@ class ApprovalRemoteDataSourceImpl extends ApprovalRemoteDataSource {
       int companyId, String module, String token, int id) async {
     final response = await client.get(Uri.parse(
         '$baseUrl/nativeapi/approval/view.php?token=$token&company=$companyId&module=$module&id=$id'));
-    print(response.body);
     if (response.statusCode == 200) {
       return DetailApprovalModel.fromJson(json.decode(response.body));
     } else {
+      throw ServerException();
+    }
+  }
+
+  Future<bool> saveApproval(int companyId, String module, String token, int id,
+      String action, String remark) async {
+    var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(
+            '$baseUrl/nativeapi/approval/post.php?token=$token&company=$companyId&module=$module&id=$id'));
+    request.fields.addAll({'state': action, 'remark': remark});
+    print(action + remark);
+    var response = await client.send(request);
+    print(await response.stream.bytesToString());
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print(response.reasonPhrase);
       throw ServerException();
     }
   }

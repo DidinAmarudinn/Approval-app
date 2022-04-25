@@ -15,4 +15,6 @@ abstract class ApprovalRepository {
       int companyId, String module, String token);
   Future<Either<Failure, DetailApproval>> getDetailApproval(
       int companyId, String module, String token, int id);
+  Future<Either<Failure, bool>> saveApproval(int companyId, String module,
+      String token, int id, String action, String remark);
 }
